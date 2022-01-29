@@ -1,12 +1,12 @@
 # Getting Started
 
-Back-end:
+## Back-end:
 
-## Open API
+- Open API Folder
 
-Run application
+- Run application
 
-##Front-End
+## Front-End
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
