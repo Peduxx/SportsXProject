@@ -1,10 +1,18 @@
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using VettaProject.Api.Models;
 
 namespace VettaProject.Api.Services.Interfaces
 {
     public interface IClientService
     {
-        Task Save(Client clientRequest);
+        void Save(Client clientRequest);
+
+        void Edit(Client request);
+
+        Client GetByCPF(string cpf);
+
+        IEnumerable<Client> GetAll();
+
+        void Delete(string cpf);
     }
 }

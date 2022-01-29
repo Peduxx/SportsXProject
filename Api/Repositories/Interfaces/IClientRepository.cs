@@ -1,10 +1,19 @@
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using VettaProject.Api.Models;
 
 namespace Api.Repositories.Interfaces
 {
+    //Interface do repositório de cliente.
     public interface IClientRepository
     {
-        Task Save(Client clientPerson);
+        void Save(Client clientPerson);
+
+        void Edit(Client client);
+
+        Client GetByCPF(string cpf);
+
+        IEnumerable<Client> GetAll();
+
+        void Delete(Client client);
     }
 }

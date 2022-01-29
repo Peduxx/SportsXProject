@@ -10,11 +10,5 @@ namespace VettaProject.Api.Models.Base
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        public DateTime CreationDate { get; set; }
-
-        public DateTime UpdatedDate { get; set; }
-
-        public DateTime? DeletionDate { get; set; }
     }
 }

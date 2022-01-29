@@ -29,6 +29,10 @@ namespace VettaProject.Api.Models
         [Required]
         public Classification Classification { get; set; }
 
+        public DateTime CreationDate { get; set; }
+
+        public DateTime UpdatedDate { get; set; }
+
         public static Client Create(string name, string socialReason, string cnpj, string cpf, string email, string cep, IEnumerable<PhoneNumber> phoneNumber, Classification classification)
         {
             return new()

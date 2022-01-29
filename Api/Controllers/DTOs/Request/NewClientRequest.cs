@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Api.Models;
+using Newtonsoft.Json;
 using VettaProject.Api.Models.Enum;
 
 namespace VettaProject.Api.Controllers.DTOs.Request
