@@ -1,4 +1,12 @@
-# Getting Started with Create React App
+# Getting Started
+
+## Back-end:
+
+- Open API Folder
+
+- Run application
+
+## Front-End
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
