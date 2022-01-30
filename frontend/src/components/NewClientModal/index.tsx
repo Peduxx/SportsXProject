@@ -8,6 +8,9 @@ import {
   TelephoneNumberBox,
 } from "./styles";
 import InputMask from "react-input-mask";
+import { ClientNumber } from "../ClientList/types";
+
+import { toast } from "react-toastify";
 
 interface newClientModalProps {
   isOpen: boolean;
@@ -28,15 +31,19 @@ export function NewClientModal({
   const [CEP, setCEP] = useState("");
   const [number, setNumber] = useState("");
 
-  const [phoneNumber, setphoneNumber] = useState([{}]);
+  const [phoneNumber, setPhoneNumber] = useState<ClientNumber[]>([]);
+
+  console.log(phoneNumber);
 
   function handleAddNumber(event: FormEvent) {
     event.preventDefault();
 
-    setphoneNumber(() => [{ number }]);
+    setPhoneNumber((phoneNumber: any) => [...phoneNumber, { number }]);
+
+    toast.success("Número com sucesso!");
   }
 
-  function handleCreateNewClient(event: FormEvent) {
+  async function handleCreateNewClient(event: FormEvent) {
     event.preventDefault();
 
     const data = {
@@ -50,7 +57,16 @@ export function NewClientModal({
       classification,
     };
 
-    api.post("/Create", data).then((response) => alert(response.data));
+    try {
+      await api.post("Create", data);
+
+      toast.success("Cliente criado com sucesso!");
+      window.location.reload();
+    } catch (err) {
+      toast.error("Ocorreu um erro ao tentar criar o cliente!");
+    }
+
+    onRequestClose();
   }
 
   return (

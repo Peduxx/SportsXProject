@@ -3,41 +3,50 @@ import Modal from "react-modal";
 import { api } from "../../services/api";
 import { Container, ClientClassificationContainer, RadioBox } from "./styles";
 import InputMask from "react-input-mask";
+import { Client } from "../ClientList/types";
+
+import { toast } from "react-toastify";
 
 interface editClientModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
+  clientToEdit: Client;
 }
 
 export function EditClientModal({
   isOpen,
   onRequestClose,
+  clientToEdit,
 }: editClientModalProps) {
   const [classification, setClassification] = useState(2);
 
   const [name, setName] = useState("");
   const [socialReason, setSocialReason] = useState("");
   const [email, setEmail] = useState("");
-  const [CPF, setCPF] = useState("");
-  const [CNPJ, setCNPJ] = useState("");
   const [CEP, setCEP] = useState("");
 
-  function handleCreateNewClient(event: FormEvent) {
+  async function handleEditClient(event: FormEvent) {
     event.preventDefault();
 
     const data = {
-      name,
-      socialReason,
-      email,
-      CPF,
-      CNPJ,
-      CEP,
+      name: name || clientToEdit.name,
+      socialReason: socialReason || clientToEdit.socialReason,
+      email: email || clientToEdit.email,
+      CEP: CEP || clientToEdit.cep,
       classification,
     };
 
-    api
-      .put(`/Edit/?cpf=${data.CPF}`, data)
-      .then((response) => alert(response.data));
+    try {
+      await api.put(`/Edit/?cpf=${clientToEdit.cpf}`, data);
+
+      toast.success("Cliente editado com sucesso!");
+
+      window.location.reload();
+    } catch (err) {
+      toast.error("Ocorreu um erro ao tentar editar o cliente!");
+    }
+
+    onRequestClose();
   }
 
   return (
@@ -47,37 +56,25 @@ export function EditClientModal({
       overlayClassName="react-modal-overlay"
       className="react-modal-content"
     >
-      <Container onSubmit={handleCreateNewClient}>
+      <Container onSubmit={handleEditClient}>
         <h2>Editar cliente</h2>
         <input
-          value={name}
+          defaultValue={clientToEdit.name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Nome"
         />
         <input
-          value={socialReason}
+          defaultValue={clientToEdit.socialReason}
           onChange={(event) => setSocialReason(event.target.value)}
           placeholder="Razão Social"
         />
         <input
-          value={email}
+          defaultValue={clientToEdit.email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="Email"
         />
         <InputMask
-          value={CPF}
-          onChange={(event) => setCPF(event.target.value)}
-          mask="999.999.999-99"
-          placeholder="CPF do usuário que deseja alterar"
-        />
-        <InputMask
-          value={CNPJ}
-          onChange={(event) => setCNPJ(event.target.value)}
-          mask="99.999.999/9999-99"
-          placeholder="CNPJ"
-        />
-        <InputMask
-          value={CEP}
+          defaultValue={clientToEdit.cep}
           onChange={(event) => setCEP(event.target.value)}
           mask="99-999-999"
           placeholder="CEP"

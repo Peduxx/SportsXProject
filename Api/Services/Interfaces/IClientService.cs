@@ -7,11 +7,9 @@ namespace VettaProject.Api.Services.Interfaces
     {
         void Save(Client clientRequest);
 
-        void Edit(Client request);
+        void Edit(string cpf, Client request);
 
-        Client GetByCPF(string cpf);
-
-        IEnumerable<Client> GetAll();
+        List<Client> GetAll();
 
         void Delete(string cpf);
     }

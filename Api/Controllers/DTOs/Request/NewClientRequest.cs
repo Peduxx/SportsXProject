@@ -10,14 +10,10 @@ namespace VettaProject.Api.Controllers.DTOs.Request
     //Entidade responsável por mapear e validar os dados recebidos na requisição.
     public class NewClientRequest
     {
-        [Required]
         public string Name { get; set; }
 
-        [StringLength(100, ErrorMessage = "Razão Social deve ter 100 caracteres.")]
         public string SocialReason { get; set; }
 
-        [Required]
-        [DataType(DataType.EmailAddress, ErrorMessage = "E-mail em formato inválido.")]
         public string Email { get; set; }
 
         public IEnumerable<PhoneNumber> PhoneNumber { get; set; }
@@ -28,7 +24,6 @@ namespace VettaProject.Api.Controllers.DTOs.Request
 
         public string CEP { get; set; }
 
-        [Required]
         public Classification Classification { get; set; }
     }
 }

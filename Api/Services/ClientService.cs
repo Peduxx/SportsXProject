@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Api.Repositories.Interfaces;
+using Api.Services.Validator;
 using VettaProject.Api.Models;
 using VettaProject.Api.Services.Interfaces;
 
@@ -9,77 +10,100 @@ namespace Api.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
+        private readonly ClientValidator _validator;
 
         public ClientService(IClientRepository clientRepository)
         {
             _clientRepository = clientRepository;
+            _validator = new ClientValidator();
         }
 
         public void Save(Client clientRequest)
         {
-            if (Convert.ToBoolean(_clientRepository.GetByCPF(clientRequest.CPF)))
-                throw new Exception("Cliente já cadastrado no sistema.");
+            try
+            {
+                Client clientCheck = _clientRepository.GetByCPF(clientRequest.CPF);
 
-            Client client = Client.Create(
-                                         clientRequest.Name,
-                                         clientRequest.SocialReason,
-                                         clientRequest.CNPJ,
-                                         clientRequest.CPF,
-                                         clientRequest.Email,
-                                         clientRequest.CEP,
-                                         clientRequest.PhoneNumber,
-                                         clientRequest.Classification
-                                        );
+                if (clientCheck != null)
+                    throw new Exception("Esse CPF já está cadastrado no sistema.");
 
-            _clientRepository.Save(client);
+                _validator.Validate(clientRequest);
+
+                Client client = Client.Create(
+                                             clientRequest.Name,
+                                             clientRequest.SocialReason,
+                                             clientRequest.CNPJ,
+                                             clientRequest.CPF,
+                                             clientRequest.Email,
+                                             clientRequest.CEP,
+                                             clientRequest.PhoneNumber,
+                                             clientRequest.Classification
+                                            );
+
+                _clientRepository.Save(client);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public void Edit(Client clientRequest)
+        public void Edit(string cpf, Client clientRequest)
         {
-            Client clientCheck = _clientRepository.GetByCPF(clientRequest.CPF);
+            try
+            {
+                Client clientCheck = _clientRepository.GetByCPF(cpf);
 
-            if (clientCheck == null)
-                throw new Exception("Cliente não cadastrado no sistema.");
+                if (clientCheck == null)
+                    throw new Exception("Cliente não cadastrado no sistema.");
 
-            clientCheck.Name = clientRequest.Name;
-            clientCheck.SocialReason = clientRequest.SocialReason;
-            clientCheck.CPF = clientRequest.CPF;
-            clientCheck.CNPJ = clientRequest.CNPJ;
-            clientCheck.Email = clientRequest.Email;
-            clientCheck.CEP = clientRequest.CEP;
-            clientCheck.Classification = clientRequest.Classification;
+                _validator.Validate(clientRequest);
 
-            clientCheck.UpdatedDate = DateTime.Now;
+                clientCheck.Name = clientRequest.Name;
+                clientCheck.SocialReason = clientRequest.SocialReason;
+                clientCheck.Email = clientRequest.Email;
+                clientCheck.CEP = clientRequest.CEP;
+                clientCheck.Classification = clientRequest.Classification;
 
-            _clientRepository.Edit(clientCheck);
+                clientCheck.UpdatedDate = DateTime.Now;
+
+                _clientRepository.Edit(clientCheck);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Client GetByCPF(string cpf)
+        public List<Client> GetAll()
         {
-            Client clientCheck = _clientRepository.GetByCPF(cpf);
-            if (clientCheck == null)
-                throw new Exception("Cliente não cadastrado no sistema.");
+            try
+            {
+                List<Client> clients = _clientRepository.GetAll();
 
-            Client client = _clientRepository.GetByCPF(cpf);
-
-            return client;
-        }
-
-        public IEnumerable<Client> GetAll()
-        {
-            IEnumerable<Client> clients = _clientRepository.GetAll();
-
-            return clients;
+                return clients;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Delete(string cpf)
         {
-            Client client = _clientRepository.GetByCPF(cpf);
+            try
+            {
+                Client client = _clientRepository.GetByCPF(cpf);
 
-            if (client == null)
-                throw new Exception("Cliente não cadastrado no sistema.");
+                if (client == null)
+                    throw new Exception("Cliente não cadastrado no sistema.");
 
-            _clientRepository.Delete(client);
+                _clientRepository.Delete(client);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

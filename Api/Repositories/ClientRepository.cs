@@ -41,9 +41,9 @@ namespace Api.Repositories
         }
 
         //Busca todos os clientes no banco de dados.
-        public IEnumerable<Client> GetAll()
+        public List<Client> GetAll()
         {
-            IEnumerable<Client> clients = _context.Clients.ToList();
+            List<Client> clients = _context.Clients.ToList();
 
             foreach (Client client in clients)
                 client.PhoneNumber = _context.PhoneNumbers.ToList().Where(phoneNumber => phoneNumber.ClientId == client.Id);

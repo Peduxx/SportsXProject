@@ -3,15 +3,40 @@ import { Dashboard } from "./components/Dashboard";
 import { GlobalStyle } from "./styles/global";
 import { ClientList } from "./components/ClientList";
 import Modal from "react-modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NewClientModal } from "./components/NewClientModal";
 import { EditClientModal } from "./components/EditClientModal";
+
+import { ToastContainer } from "react-toastify";
+
+import { api } from "./services/api";
+import { Client } from "./components/ClientList/types";
+
+import "react-toastify/dist/ReactToastify.css";
 
 Modal.setAppElement("#root");
 
 export function App() {
   const [isNewClientModalOpen, setIsNewClientModalOpen] = useState(false);
   const [isEditClientModalOpen, setIsEditClientModalOpen] = useState(false);
+  const [clientToEdit, setClientToEdit] = useState<Client>({
+    classification: 0,
+    cpf: "",
+    cnpj: "",
+    email: "",
+    cep: "",
+    socialReason: "",
+    id: 0,
+    name: "",
+    phoneNumber: [],
+  });
+
+  const [clients, setClients] = useState<Client[]>([]);
+  const [clientCPFFilter, setClientCPFFilter] = useState("");
+
+  useEffect(() => {
+    api.get("/").then((response) => setClients(response.data));
+  }, []);
 
   function handleOpenNewClientModal() {
     setIsNewClientModalOpen(true);
@@ -31,6 +56,9 @@ export function App() {
   return (
     <>
       <GlobalStyle />
+
+      <ToastContainer autoClose={3000} />
+
       <NewClientModal
         isOpen={isNewClientModalOpen}
         onRequestClose={handleCloseNewClientModal}
@@ -38,10 +66,21 @@ export function App() {
       <EditClientModal
         isOpen={isEditClientModalOpen}
         onRequestClose={handleCloseEditClientModal}
+        clientToEdit={clientToEdit}
       />
       <Header />
-      <Dashboard onOpenNewClientModal={handleOpenNewClientModal} />
-      <ClientList onOpenEditClientModal={handleOpenEditClientModal} />
+
+      <Dashboard
+        onOpenNewClientModal={handleOpenNewClientModal}
+        setClientCPFFilter={setClientCPFFilter}
+      />
+
+      <ClientList
+        onOpenEditClientModal={handleOpenEditClientModal}
+        clients={clients}
+        clientCPFFilter={clientCPFFilter}
+        setClientToEdit={setClientToEdit}
+      />
     </>
   );
 }

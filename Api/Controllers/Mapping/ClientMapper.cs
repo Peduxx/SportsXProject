@@ -29,11 +29,8 @@ namespace Api.Controllers.Mapping
             {
                 Name = clientRequest.Name,
                 SocialReason = clientRequest.SocialReason,
-                CPF = clientRequest.CPF,
-                CNPJ = clientRequest.CNPJ,
                 Email = clientRequest.Email,
                 CEP = clientRequest.CEP,
-                PhoneNumber = clientRequest.PhoneNumber,
                 Classification = clientRequest.Classification
             };
         }

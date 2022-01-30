@@ -12,7 +12,7 @@ namespace Api.Repositories.Interfaces
 
         Client GetByCPF(string cpf);
 
-        IEnumerable<Client> GetAll();
+        List<Client> GetAll();
 
         void Delete(Client client);
     }

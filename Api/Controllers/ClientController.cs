@@ -43,25 +43,14 @@ namespace VettaProject.Api.Controllers
         [Route("[action]")]
         public ActionResult Edit([FromQuery] string cpf, [FromBody] EditClientRequest clientRequest)
         {
+            //Mapeia a entidade recebida para uma entidade de cliente.
             Client client = _mapper.Map(clientRequest);
 
             //Chamada da camada de service.
-            _clientService.Edit(client);
+            _clientService.Edit(cpf, client);
 
             //Retorno de sucesso caso a requisição consiga salvar o registro atualizado.
             return StatusCode(200, "Cliente editado com sucesso! Novos dados foram salvos.");
-        }
-
-        //Endpoint responsável por buscar um cliente especifico.
-        [HttpGet]
-        [Route("[Action]/")]
-        public ActionResult Get([FromQuery] string cpf)
-        {
-            //Chamada da camada de service.
-            Client client = _clientService.GetByCPF(cpf);
-
-            //Retorna sucesso e os clientes cadastrados no banco de dados.
-            return StatusCode(200, client);
         }
 
         //Endpoint responsável por buscar todos os registros de clientes existentes no banco de dados.

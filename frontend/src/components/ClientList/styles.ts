@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-export const PhoneNumberContainer = styled.td``;
-
 export const Container = styled.div`
   padding: 1rem;
   display: flex;
@@ -34,7 +32,32 @@ export const Container = styled.div`
       padding: 1rem 2rem;
       text-align: left;
       line-height: 1.5rem;
-      border-radius: 0.5rem;
+      border-radius: 0.2rem;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px;
+
+      button {
+        padding: 8px;
+        width: 5rem;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-radius: 25px;
+        color: #fff;
+        border: none;
+      }
+
+      .edit-button {
+        background: var(--blue);
+      }
+
+      .delete-button {
+        background: var(--red);
+      }
     }
   }
 `;

@@ -1,42 +1,22 @@
-import { useEffect, useState } from "react";
+import PhoneNumber from "./PhoneNumber";
+import { Container } from "./styles";
+import { Client } from "./types";
 import { api } from "../../services/api";
-import { Container, PhoneNumberContainer } from "./styles";
-
-//[{client.phoneNumber[{number}]}]
+import { toast } from "react-toastify";
 
 interface ListProps {
   onOpenEditClientModal: () => void;
+  setClientToEdit: any;
+  clients: Client[];
+  clientCPFFilter: string;
 }
 
-interface ClientNumber {
-  id: number;
-  number: string;
-}
-
-interface Client {
-  id: number;
-  cpf: string;
-  cnpj: string;
-  name: string;
-  classification: string;
-  phoneNumber: ClientNumber[];
-}
-
-export function ClientList({ onOpenEditClientModal }: ListProps) {
-  const [clients, setClients] = useState<Client[]>([]);
-
-  const [clientNumbers, setClientNumbers] = useState<ClientNumber[]>([]);
-
-  useEffect(() => {
-    api.get("/").then((response) => setClients(response.data));
-  }, []);
-
-  // clients.map((client) => {
-  //   setClientNumbers(client.phoneNumber);
-  // });
-
-  console.log(clients);
-
+export function ClientList({
+  onOpenEditClientModal,
+  clients,
+  clientCPFFilter,
+  setClientToEdit,
+}: ListProps) {
   return (
     <Container>
       <table>
@@ -50,32 +30,56 @@ export function ClientList({ onOpenEditClientModal }: ListProps) {
         </thead>
 
         <tbody>
-          {clients.map((client) => {
-            return (
-              <tr key={client.id}>
-                <td>
-                  {client.cpf}/{client.cnpj}
-                </td>
-                <td>{client.name}</td>
-                <td>{client.classification}</td>
-                <PhoneNumberContainer>
-                  {clientNumbers.map((phoneNumber) => {
-                    return <p key={phoneNumber.id}>{client.phoneNumber}</p>;
-                  })}
-                </PhoneNumberContainer>
-                <button onClick={onOpenEditClientModal}>Editar</button>
-                <button
-                  onClick={() => {
-                    api
-                      .delete(`/Delete?cpf=${client.cpf}`)
-                      .then(() => alert("Cliente apagado"));
-                  }}
-                >
-                  Deletar
-                </button>
-              </tr>
-            );
-          })}
+          {clients
+            ?.filter((client: Client) => client.cpf.includes(clientCPFFilter))
+            .map((clientFiltered: Client) => {
+              return (
+                <tr key={clientFiltered.id}>
+                  <td>
+                    {clientFiltered.cpf}/{clientFiltered.cnpj}
+                  </td>
+                  <td>{clientFiltered.name}</td>
+                  <td>
+                    {clientFiltered.classification === 1
+                      ? "Ativo"
+                      : clientFiltered.classification === 2
+                      ? "Inativo"
+                      : "Preferencial"}
+                  </td>
+
+                  <PhoneNumber numbers={clientFiltered?.phoneNumber} />
+
+                  <div className="buttons">
+                    <button
+                      className="edit-button"
+                      onClick={() => {
+                        onOpenEditClientModal();
+                        setClientToEdit(clientFiltered);
+                      }}
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      className="delete-button"
+                      onClick={async () => {
+                        await api.delete(`/Delete?cpf=${clientFiltered.cpf}`);
+
+                        try {
+                          toast.success("Cliente deletado com sucesso!");
+
+                          window.location.reload();
+                        } catch (err) {
+                          toast.error("Erro ao tentar deletar o usuário.");
+                        }
+                      }}
+                    >
+                      Deletar
+                    </button>
+                  </div>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </Container>
