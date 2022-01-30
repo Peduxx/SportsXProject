@@ -33,8 +33,6 @@ export function NewClientModal({
 
   const [phoneNumber, setPhoneNumber] = useState<ClientNumber[]>([]);
 
-  console.log(phoneNumber);
-
   function handleAddNumber(event: FormEvent) {
     event.preventDefault();
 
